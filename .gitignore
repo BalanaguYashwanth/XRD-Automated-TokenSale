@@ -1,0 +1,7 @@
+config.py
+.idea
+__pycache__
+venv
+img.png
+transactions.txt
+metadata.json
