@@ -10,5 +10,29 @@
         "features": "AI",
         "prompts": "sample",
         "owner": "available"
+    },
+    {
+        "filename": "0002.png",
+        "ID": "0002",
+        "animal": "Mud krokodile",
+        "plant": "AI",
+        "landscape": "aquatic",
+        "weather": "clear",
+        "time": "sunset",
+        "features": "AI",
+        "prompts": "sample",
+        "owner": "available"
+    },
+    {
+        "filename": "0003.png",
+        "ID": "0003",
+        "animal": "Mud krokodile",
+        "plant": "AI",
+        "landscape": "aquatic",
+        "weather": "clear",
+        "time": "sunset",
+        "features": "AI",
+        "prompts": "sample",
+        "owner": "available"
     }
-  ]
+]
