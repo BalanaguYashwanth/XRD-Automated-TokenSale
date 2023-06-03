@@ -79,8 +79,8 @@ def main() -> None:
                 with open(txt_file_path, "a") as file:
                     file.write(hash_value + "\n")
                 print("The transaction has been successfully added to the verified list.")
-        except:
-            print("Error validating transaction.")
+        except Exception as e:
+            print("Error validating transaction.---",e)
 
 
 if __name__ == "__main__":
