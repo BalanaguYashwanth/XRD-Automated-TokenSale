@@ -45,5 +45,5 @@ def check(info):
         s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=METADATA_FILE_KEY)
 
     else:
-        send_radix(info[1], "Please check instructions and again send XRD",float(info[3]))
+        send_radix(info[1], "Please check instructions and again send exact XRD",float(info[3]))
         print("its not TransferTokens or token not xrd or message = null or not sent exact amount ")
