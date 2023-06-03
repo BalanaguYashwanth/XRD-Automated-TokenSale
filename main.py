@@ -13,11 +13,11 @@ import radixlib as radix
 from constant_types import CRUD
 import parser_radix_hash
 import check_data_and_add
-from config import PROJECT_WALLET_ADDRESS,ACCESS_KEY_ID,SECRET_ACCESS_KEY,BUCKET_NAME,FILE_KEY
+from config import PROJECT_WALLET_ADDRESS,ACCESS_KEY_ID,SECRET_ACCESS_KEY,BUCKET_NAME,XRD_TRANSACTIONS_FILE_KEY
 
 
 s3_client = boto3.client('s3', aws_access_key_id=ACCESS_KEY_ID, aws_secret_access_key=SECRET_ACCESS_KEY)
-response = s3_client.get_object(Bucket=BUCKET_NAME, Key=FILE_KEY)
+response = s3_client.get_object(Bucket=BUCKET_NAME, Key=XRD_TRANSACTIONS_FILE_KEY)
 existing_json = json.loads(response['Body'].read())
 existing_data = existing_json['xrdTransactions']
 
@@ -96,7 +96,7 @@ def check_transactions_file(hash_value, type):
                 "status":CRUD.PENDING,
             }
             existing_data.append(new_transaction_data)
-            s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=FILE_KEY)
+            s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=XRD_TRANSACTIONS_FILE_KEY)
         
     elif type == CRUD.SUCCESS:
         for index,old_transaction in enumerate(existing_data):
@@ -107,7 +107,7 @@ def check_transactions_file(hash_value, type):
                 }
                 existing_data[index] = update_transaction_data
                 break
-        s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=FILE_KEY)
+        s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=XRD_TRANSACTIONS_FILE_KEY)
 
     elif type == CRUD.ERROR:
         for index,old_transaction in enumerate(existing_data):
@@ -118,13 +118,13 @@ def check_transactions_file(hash_value, type):
                     }
                 existing_data[index] = update_transaction_data
                 break
-        s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=FILE_KEY)
+        s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=XRD_TRANSACTIONS_FILE_KEY)
 
     return new_hash_flag
             
 
 
 if __name__ == "__main__":
-    while True:
-        main()
-        time.sleep(10)
+    # while True:
+    main()
+        # time.sleep(10)

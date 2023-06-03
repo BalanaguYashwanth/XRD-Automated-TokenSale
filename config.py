@@ -12,7 +12,8 @@ ACCESS_KEY_ID = os.environ.get("ACCESS_KEY_ID")
 SECRET_ACCESS_KEY = os.environ.get("SECRET_ACCESS_KEY")
 
 BUCKET_NAME = os.environ.get("BUCKET_NAME")
-FILE_KEY = os.environ.get("FILE_KEY")
+XRD_TRANSACTIONS_FILE_KEY = os.environ.get("XRD_TRANSACTIONS_FILE_KEY")
+METADATA_FILE_KEY = os.environ.get("METADATA_FILE_KEY")
 
 network: radix.network.Network = radix.network.MAINNET
 xrd_rri: str = radix.derive.xrd_rri_on_network(network)
