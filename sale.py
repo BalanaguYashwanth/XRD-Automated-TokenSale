@@ -31,6 +31,8 @@ def send_radix(recipient_address, transaction_message, amount):
 
     # Using the quick transactions capability of the wallet object to create a transaction for the
     # token transfer.
+
+    #TODO- Send telegram channel link,
     tx_hash: str = wallet.build_sign_and_send_transaction(
         actions=(
             wallet.action_builder.token_transfer(
@@ -42,6 +44,8 @@ def send_radix(recipient_address, transaction_message, amount):
         ),
         message_string=transaction_message
     )
+
+    #TODO- trigger telegram channel and refund the transaction and latest status in it,
     print("Fund transfer done under transaction hash:", tx_hash)
 
 
@@ -65,6 +69,9 @@ def send_junger_token(recipient_address, transaction_message):
 
     # Using the quick transactions capability of the wallet object to create a transaction for the
     # token transfer.
+
+
+    #TODO- Send telegram channel link,
     tx_hash: str = wallet.build_sign_and_send_transaction(
         actions=(
             wallet.action_builder
@@ -77,4 +84,5 @@ def send_junger_token(recipient_address, transaction_message):
         ),
         message_string=transaction_message
     )
+    #TODO- trigger telegram channel and add the transactoin and latest status in it,
     print("Fund transfer done under transaction hash:", tx_hash)

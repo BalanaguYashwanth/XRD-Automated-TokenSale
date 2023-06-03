@@ -8,6 +8,12 @@ PROJECT_WALLET_ADDRESS = os.environ.get("PROJECT_WALLET_ADDRESS")
 XRD_LIMIT = os.environ.get("XRD_LIMIT")
 JUNGLER_LIMIT = os.environ.get("JUNGLER_LIMIT")
 
+ACCESS_KEY_ID = os.environ.get("ACCESS_KEY_ID")
+SECRET_ACCESS_KEY = os.environ.get("SECRET_ACCESS_KEY")
+
+BUCKET_NAME = os.environ.get("BUCKET_NAME")
+FILE_KEY = os.environ.get("FILE_KEY")
+
 network: radix.network.Network = radix.network.MAINNET
 xrd_rri: str = radix.derive.xrd_rri_on_network(network)
 

@@ -9,7 +9,7 @@
         "time": "sunset",
         "features": "AI",
         "prompts": "sample",
-        "owner": "available"
+        "owner": "rdx1qspjr3zjukxq2r95zyqj5mt99hhu2dgqsaf8y43vpq72jlp44z9n0yqvpvhlg"
     },
     {
         "filename": "0002.png",
@@ -21,11 +21,95 @@
         "time": "sunset",
         "features": "AI",
         "prompts": "sample",
-        "owner": "available"
+        "owner": "rdx1qspjr3zjukxq2r95zyqj5mt99hhu2dgqsaf8y43vpq72jlp44z9n0yqvpvhlg"
     },
     {
         "filename": "0003.png",
         "ID": "0003",
+        "animal": "Mud krokodile",
+        "plant": "AI",
+        "landscape": "aquatic",
+        "weather": "clear",
+        "time": "sunset",
+        "features": "AI",
+        "prompts": "sample",
+        "owner": "available"
+    },
+    {
+        "filename": "0004.png",
+        "ID": "0004",
+        "animal": "Mud krokodile",
+        "plant": "AI",
+        "landscape": "aquatic",
+        "weather": "clear",
+        "time": "sunset",
+        "features": "AI",
+        "prompts": "sample",
+        "owner": "available"
+    },
+    {
+        "filename": "0005.png",
+        "ID": "0005",
+        "animal": "Mud krokodile",
+        "plant": "AI",
+        "landscape": "aquatic",
+        "weather": "clear",
+        "time": "sunset",
+        "features": "AI",
+        "prompts": "sample",
+        "owner": "available"
+    },
+    {
+        "filename": "0006.png",
+        "ID": "0006",
+        "animal": "Mud krokodile",
+        "plant": "AI",
+        "landscape": "aquatic",
+        "weather": "clear",
+        "time": "sunset",
+        "features": "AI",
+        "prompts": "sample",
+        "owner": "available"
+    },
+    {
+        "filename": "0007.png",
+        "ID": "0007",
+        "animal": "Mud krokodile",
+        "plant": "AI",
+        "landscape": "aquatic",
+        "weather": "clear",
+        "time": "sunset",
+        "features": "AI",
+        "prompts": "sample",
+        "owner": "available"
+    },
+    {
+        "filename": "0008.png",
+        "ID": "0008",
+        "animal": "Mud krokodile",
+        "plant": "AI",
+        "landscape": "aquatic",
+        "weather": "clear",
+        "time": "sunset",
+        "features": "AI",
+        "prompts": "sample",
+        "owner": "available"
+    },
+    {
+        "filename": "0009.png",
+        "ID": "0009",
+        "animal": "Mud krokodile",
+        "plant": "AI",
+        "landscape": "aquatic",
+        "weather": "clear",
+        "time": "sunset",
+        "features": "AI",
+        "prompts": "sample",
+        "owner": "available"
+    },
+    {
+        "filename": "0015.png",
+        "ID": "0015",
         "animal": "Mud krokodile",
         "plant": "AI",
         "landscape": "aquatic",

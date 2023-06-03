@@ -6,12 +6,20 @@ This method uses the provider without using a signer as there is no need to crea
 object to perform this simple query (you can do it from the wallet object, it's just not needed.)
 """
 import time
+import boto3
+import json
 from typing import Optional, List, Dict, Any
 import radixlib as radix
-
+from constant_types import CRUD
 import parser_radix_hash
 import check_data_and_add
-from config import PROJECT_WALLET_ADDRESS
+from config import PROJECT_WALLET_ADDRESS,ACCESS_KEY_ID,SECRET_ACCESS_KEY,BUCKET_NAME,FILE_KEY
+
+
+s3_client = boto3.client('s3', aws_access_key_id=ACCESS_KEY_ID, aws_secret_access_key=SECRET_ACCESS_KEY)
+response = s3_client.get_object(Bucket=BUCKET_NAME, Key=FILE_KEY)
+existing_json = json.loads(response['Body'].read())
+existing_data = existing_json['xrdTransactions']
 
 
 def main() -> None:
@@ -50,23 +58,13 @@ def main() -> None:
         if cursor is None:
             break
 
-    txt_file_path = "transactions.txt"
-
-    # Загрузка существующих транзакций из текстового файла
-    existing_transactions = set()
-    try:
-        with open(txt_file_path, "r") as file:
-            lines = file.readlines()
-            existing_transactions = set(map(str.strip, lines))
-    except FileNotFoundError:
-        pass
-
     # Проверка каждой транзакции по хэшу
     for transaction in transactions_list:
         try:
             hash_value = transaction['hash']
             print(hash_value)
-            if hash_value in existing_transactions:
+            # check_transactions_file(hash_value, CRUD.PENDING)
+            if not check_transactions_file(hash_value, CRUD.PENDING):
                 print("The transaction has already been verified.")
                 break
             else:
@@ -75,15 +73,58 @@ def main() -> None:
                 print(info)
                 if info[2] == f'{PROJECT_WALLET_ADDRESS}':
                     check_data_and_add.check(info)
-                # Добавление хэша транзакции в текстовый файл
-                with open(txt_file_path, "a") as file:
-                    file.write(hash_value + "\n")
-                print("The transaction has been successfully added to the verified list.")
+
+                check_transactions_file(hash_value,CRUD.SUCCESS)
+                print(
+                    "The transaction has been successfully added to the verified list.")
         except Exception as e:
-            print("Error validating transaction.---",e)
+            check_transactions_file(hash_value,CRUD.ERROR)
+            print("Error validating transaction.---", e)
+
+
+def check_transactions_file(hash_value, type):
+    new_hash_flag = True
+    if type == CRUD.PENDING:
+        for old_transaction in existing_data:
+            if hash_value == old_transaction["id"]:
+                new_hash_flag = False
+            
+
+        if new_hash_flag == True:
+            new_transaction_data={
+                "id":hash_value,
+                "status":CRUD.PENDING,
+            }
+            existing_data.append(new_transaction_data)
+            s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=FILE_KEY)
+        
+    elif type == CRUD.SUCCESS:
+        for index,old_transaction in enumerate(existing_data):
+            if hash_value == old_transaction['id']:
+                update_transaction_data={
+                    "id":hash_value,
+                    "status":CRUD.SUCCESS,
+                }
+                existing_data[index] = update_transaction_data
+                break
+        s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=FILE_KEY)
+
+    elif type == CRUD.ERROR:
+        for index,old_transaction in enumerate(existing_data):
+            if hash_value == old_transaction["id"]:
+                update_transaction_data={
+                    "id":hash_value,
+                    "status":CRUD.ERROR,
+                    }
+                existing_data[index] = update_transaction_data
+                break
+        s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=FILE_KEY)
+
+    return new_hash_flag
+            
 
 
 if __name__ == "__main__":
     while True:
         main()
-        time.sleep(300)
+        time.sleep(10)
