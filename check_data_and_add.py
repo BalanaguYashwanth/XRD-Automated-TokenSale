@@ -29,11 +29,11 @@ def check(info):
                     else:
                         message = f"NFT with ID {num} already owned"
                         print(message)
-                        send_radix(info[1], message,info[3])
+                        send_radix(info[1], message,float(info[3]))
             if not found:
-                message = f"NFT with ID {num} not found"
+                message = f"NFT with ID {num} not found, Try buying Another"
                 print(message)
-                send_radix(info[1], message)
+                send_radix(info[1], message, float(info[3]))
             if i == value:
                 break
 
