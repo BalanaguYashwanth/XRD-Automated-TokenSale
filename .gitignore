@@ -4,3 +4,5 @@ venv
 img.png
 transactions.txt
 .env
+lib
+lambda_function.zip

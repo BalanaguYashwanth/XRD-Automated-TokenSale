@@ -6,6 +6,7 @@ This method uses the provider without using a signer as there is no need to crea
 object to perform this simple query (you can do it from the wallet object, it's just not needed.)
 """
 import time
+import schedule
 import boto3
 import json
 from typing import Optional, List, Dict, Any
@@ -122,9 +123,19 @@ def check_transactions_file(hash_value, type):
 
     return new_hash_flag
             
+def cronJob():
+    main()
 
+schedule.every(5).seconds.do(cronJob)
 
 if __name__ == "__main__":
-    # while True:
+    while True:
+        schedule.run_pending()
+        time.sleep(5)
+
+def lambda_handler(event, context):
     main()
-        # time.sleep(10)
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
+    }
