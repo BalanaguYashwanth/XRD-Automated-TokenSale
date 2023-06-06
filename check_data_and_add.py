@@ -11,6 +11,7 @@ response = s3_client.get_object(Bucket=BUCKET_NAME, Key=METADATA_FILE_KEY)
 existing_json = json.loads(response['Body'].read())
 data_json = existing_json['collection']
 
+#check
 def check(info):
     with open("metadata.json") as file:
         digits = re.findall(r'\d+', info[5])
