@@ -8,6 +8,7 @@ object to perform this simple query (you can do it from the wallet object, it's 
 import time
 import schedule
 import boto3
+import asyncio
 import json
 from typing import Optional, List, Dict, Any
 import radixlib as radix
@@ -23,7 +24,7 @@ existing_json = json.loads(response['Body'].read())
 existing_data = existing_json['xrdTransactions']
 
 
-def main() -> None:
+async def main() -> None:
     # The address of the account that we want to get the transaction history for.
     account_address: str = f"{PROJECT_WALLET_ADDRESS}"
 
@@ -73,7 +74,7 @@ def main() -> None:
                 info = parser_radix_hash.get_info(hash_value)
                 print(info)
                 if info[2] == f'{PROJECT_WALLET_ADDRESS}':
-                    check_data_and_add.check(info)
+                    await check_data_and_add.check(info)
 
                 check_transactions_file(hash_value,CRUD.SUCCESS)
                 print(
@@ -124,7 +125,7 @@ def check_transactions_file(hash_value, type):
     return new_hash_flag
             
 def cronJob():
-    main()
+    asyncio.run(main())
 
 schedule.every(5).seconds.do(cronJob)
 

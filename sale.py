@@ -8,7 +8,7 @@ import config
 from config import MNEMONIC_PHRASE,PROJECT_WALLET_ADDRESS,JUNGLER_LIMIT
 
 
-def send_radix(recipient_address, transaction_message, amount):
+async def send_radix(recipient_address, transaction_message, amount):
     # Information about the person who we're sending the tokens to and the amount of tokens we're
     # sending.
     # recipient_address: str = "tdx1qsprkzrtmdhvfjnd9z00xtmmwg9p5wn5yawsuttu7dqqgsx2wfm25eqawk3n0"
@@ -33,7 +33,7 @@ def send_radix(recipient_address, transaction_message, amount):
     # token transfer.
 
     #TODO- Send telegram channel link,
-    tx_hash: str = wallet.build_sign_and_send_transaction(
+    tx_hash = wallet.build_sign_and_send_transaction(
         actions=(
             wallet.action_builder.token_transfer(
                     from_account_address=wallet.address,
@@ -49,18 +49,18 @@ def send_radix(recipient_address, transaction_message, amount):
     print("Fund transfer done under transaction hash:", tx_hash)
 
 
-def send_junger_token(recipient_address, transaction_message):
+async def send_junger_token(recipient_address, transaction_message, jungler_count):
     # Loading up our wallet through the information that we provided in the config file
     
     mnemonic_phrase: str = MNEMONIC_PHRASE
-    transfer_amount: int = radix.derive.atto_from_xrd(float(JUNGLER_LIMIT))
+    transfer_amount: int = radix.derive.atto_from_xrd(float(JUNGLER_LIMIT)*float(jungler_count))
 
-    wallet: radix.Wallet = radix.Wallet(
+    wallet: radix.Wallet =  radix.Wallet(
         provider=radix.Provider(config.network),
         signer=radix.Signer.from_mnemonic(mnemonic_phrase)
     )
     # Deriving the token RRI for the token that we will will be selling
-    token_rri: str = radix.derive.token_rri(
+    token_rri: str =  radix.derive.token_rri(
         creator_public_key=wallet.public_key,
         token_symbol=config.token_symbol.lower(),
         network=config.network
@@ -72,7 +72,7 @@ def send_junger_token(recipient_address, transaction_message):
 
 
     #TODO- Send telegram channel link,
-    tx_hash: str = wallet.build_sign_and_send_transaction(
+    tx_hash =  wallet.build_sign_and_send_transaction(
         actions=(
             wallet.action_builder
             .token_transfer(
@@ -86,3 +86,45 @@ def send_junger_token(recipient_address, transaction_message):
     )
     #TODO- trigger telegram channel and add the transactoin and latest status in it,
     print("Fund transfer done under transaction hash:", tx_hash)
+    return tx_hash
+
+
+async def check_tx_hash(tx_hash, project_wallet_address, count_tx_check) -> None:
+    # The address of the account that we want to get the transaction history for.
+    account_address: str = project_wallet_address
+
+    # Defining the network that we will be connecting to.
+    network: radix.network.Network = radix.network.MAINNET
+
+    # Creating the provider object which is esentially our link or connection to the blockchain
+    # via the gateway API.
+    provider: radix.Provider = radix.Provider(network)
+
+    # Creating an empty list to store the transactions and beggining to query for the transactions
+    transactions_list: List[Dict[str, Any]] = []
+    cursor: Optional[str] = None
+
+    query_response: Dict[str, Any] =  provider.get_account_transactions(
+            account_address=account_address,
+            cursor=cursor,
+            limit=count_tx_check
+        )
+    parsed_transaction_list: List[Dict[str, Any]] =  radix.parsers.DefaultParser.parse(
+        data=query_response,
+        data_type="get_account_transactions"
+    )
+    transactions_list.extend(parsed_transaction_list)
+
+    print('tx list-----', transactions_list)
+    # sliced_transaction_list = transactions_list[0,count_tx_check+1]
+    status = False
+    for tx in transactions_list:
+        if tx['hash'] == tx_hash and tx['status'] == "CONFIRMED":
+            status = True
+            break
+        
+
+    # Printing the transactions to the console
+    # print('Transactions:', transactions_list)
+    # return True #if success true or failure false\
+    return status
