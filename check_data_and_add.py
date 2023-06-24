@@ -39,12 +39,12 @@ async def check(info):
 
                     else:
                         message = f"NFT with ID {num} already owned"
-                        print(message) #remove it
+                        #print(message) #remove it
                         await send_radix(info[1], message,float(XRD_LIMIT)) #we need to add check_tx_hash()  #use try catch
                         # time.sleep(5)
             if not found:
                 message = f"NFT with ID {num} not found, Try buying Another"
-                print(message) #remove it
+                #print(message) #remove it
                 await send_radix(info[1], message, float(info[3]))  #we need to add check_tx_hash()
                 # time.sleep(5)
 
@@ -52,10 +52,10 @@ async def check(info):
             nums_str = ", ".join(nums_to_send)
             message  =  f"Yours NFT(s) with ID(s) {nums_str}"
             tx_hash = await send_junger_token(info[1], message, int(len(nums_to_send))) # we need to send only len of available nfts 2/3
-            print('tx_hash------',tx_hash)
+            #print('tx_hash------',tx_hash)
             time.sleep(5)
             status = await check_tx_hash(tx_hash, PROJECT_WALLET_ADDRESS, int(len(nums_to_send))) #use try catch
-            print('status------',status)
+            #print('status------',status)
             if status:
                 for nftItem in nums_to_send:
                     for item in data_json:
@@ -65,7 +65,7 @@ async def check(info):
                 nums_str = ", ".join(nums_to_send)
                 message  =  f"Yours NFT(s) with ID(s) failed {nums_str} please try after sometime"
                 refund_xrd_amount = len(nums_to_send) * XRD_LIMIT
-                print('refund XRD============>',refund_xrd_amount) #check getting issue when 1/2 i.e 1 owned out 2. another not owned
+                #print('refund XRD============>',refund_xrd_amount) #check getting issue when 1/2 i.e 1 owned out 2. another not owned
                 await send_radix(info[1], message, refund_xrd_amount)
                 # time.sleep(5)
 
@@ -74,7 +74,7 @@ async def check(info):
     else:
         await send_radix(info[1], "Please check instructions and again send exact XRD",float(info[3]))
         time.sleep(5)
-        print("its not TransferTokens or token not xrd or message = null or not sent exact amount ")
+        #print("its not TransferTokens or token not xrd or message = null or not sent exact amount ")
 
 
 #check 1/2 or 2/3 check tx is getting failed
