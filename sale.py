@@ -32,21 +32,24 @@ async def send_radix(recipient_address, transaction_message, amount):
     # Using the quick transactions capability of the wallet object to create a transaction for the
     # token transfer.
 
-    #TODO- Send telegram channel link,
-    tx_hash = wallet.build_sign_and_send_transaction(
-        actions=(
-            wallet.action_builder.token_transfer(
-                    from_account_address=wallet.address,
-                    to_account_address=recipient_address,
-                    token_rri=token_rri,
-                    transfer_amount=transfer_amount
-                )
-        ),
-        message_string=transaction_message
-    )
+    try:
+        #TODO- Send telegram channel link,
+        tx_hash =  wallet.build_sign_and_send_transaction(
+            actions=(
+                wallet.action_builder.token_transfer(
+                        from_account_address=wallet.address,
+                        to_account_address=recipient_address,
+                        token_rri=token_rri,
+                        transfer_amount=transfer_amount
+                    )
+            ),
+            message_string=transaction_message
+        )
 
-    #TODO- trigger telegram channel and refund the transaction and latest status in it,
-    print("Fund transfer done under transaction hash:", tx_hash)
+        #TODO- trigger telegram channel and refund the transaction and latest status in it,
+        # print("Fund transfer done under transaction hash:", tx_hash)
+    except Exception as e:
+        print('error in send radix-----',e)
 
 
 async def send_junger_token(recipient_address, transaction_message, jungler_count):
@@ -65,28 +68,30 @@ async def send_junger_token(recipient_address, transaction_message, jungler_coun
         token_symbol=config.token_symbol.lower(),
         network=config.network
     )
-    print("Sale is done on token:", token_rri)
+    # print("Sale is done on token:", token_rri)
 
     # Using the quick transactions capability of the wallet object to create a transaction for the
     # token transfer.
 
-
-    #TODO- Send telegram channel link,
-    tx_hash =  wallet.build_sign_and_send_transaction(
-        actions=(
-            wallet.action_builder
-            .token_transfer(
-                from_account_address=PROJECT_WALLET_ADDRESS,
-                to_account_address=recipient_address,
-                token_rri=token_rri,
-                transfer_amount=transfer_amount
-            )
-        ),
-        message_string=transaction_message
-    )
-    #TODO- trigger telegram channel and add the transactoin and latest status in it,
-    print("Fund transfer done under transaction hash:", tx_hash)
-    return tx_hash
+    try:
+        #TODO- Send telegram channel link,
+        tx_hash =  wallet.build_sign_and_send_transaction(
+            actions=(
+                wallet.action_builder
+                .token_transfer(
+                    from_account_address=PROJECT_WALLET_ADDRESS,
+                    to_account_address=recipient_address,
+                    token_rri=token_rri,
+                    transfer_amount=transfer_amount
+                )
+            ),
+            message_string=transaction_message
+        )
+        #TODO- trigger telegram channel and add the transactoin and latest status in it,
+        # print("Fund transfer done under transaction hash:", tx_hash)
+        return tx_hash
+    except Exception as e:
+        print('error in sending jungler---',e)
 
 
 async def check_tx_hash(tx_hash, project_wallet_address, count_tx_check) -> None:
@@ -103,19 +108,21 @@ async def check_tx_hash(tx_hash, project_wallet_address, count_tx_check) -> None
     # Creating an empty list to store the transactions and beggining to query for the transactions
     transactions_list: List[Dict[str, Any]] = []
     cursor: Optional[str] = None
-
-    query_response: Dict[str, Any] =  provider.get_account_transactions(
-            account_address=account_address,
-            cursor=cursor,
-            limit=count_tx_check
+    try:
+        query_response: Dict[str, Any] = provider.get_account_transactions(
+                account_address=account_address,
+                cursor=cursor,
+                limit=count_tx_check
+            )
+        parsed_transaction_list: List[Dict[str, Any]] =  radix.parsers.DefaultParser.parse(
+            data=query_response,
+            data_type="get_account_transactions"
         )
-    parsed_transaction_list: List[Dict[str, Any]] =  radix.parsers.DefaultParser.parse(
-        data=query_response,
-        data_type="get_account_transactions"
-    )
-    transactions_list.extend(parsed_transaction_list)
+        transactions_list.extend(parsed_transaction_list)
+        
+    except Exception as e:
+        print('error in checking tx hash---',e)
 
-    print('tx list-----', transactions_list)
     # sliced_transaction_list = transactions_list[0,count_tx_check+1]
     status = False
     for tx in transactions_list:
