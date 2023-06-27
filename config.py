@@ -15,6 +15,9 @@ BUCKET_NAME = os.environ.get("BUCKET_NAME")
 XRD_TRANSACTIONS_FILE_KEY = os.environ.get("XRD_TRANSACTIONS_FILE_KEY")
 METADATA_FILE_KEY = os.environ.get("METADATA_FILE_KEY")
 
+CHANNEL_ID = os.environ.get("CHANNEL_ID")
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+
 network: radix.network.Network = radix.network.MAINNET
 xrd_rri: str = radix.derive.xrd_rri_on_network(network)
 

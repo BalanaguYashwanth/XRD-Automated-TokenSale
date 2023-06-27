@@ -1,11 +1,11 @@
 """
 This example demonstrates how tokens can be sent from your wallet to another wallet.
 """
-
+import requests
 import radixlib as radix
 import os
 import config
-from config import MNEMONIC_PHRASE,PROJECT_WALLET_ADDRESS,JUNGLER_LIMIT
+from config import MNEMONIC_PHRASE,PROJECT_WALLET_ADDRESS,JUNGLER_LIMIT,CHANNEL_ID,TELEGRAM_BOT_TOKEN
 
 
 async def send_radix(recipient_address, transaction_message, amount):
@@ -46,7 +46,7 @@ async def send_radix(recipient_address, transaction_message, amount):
             message_string=transaction_message
         )
 
-        #TODO- trigger telegram channel and refund the transaction and latest status in it,
+        await telegram_bot_push_message(tx_hash=tx_hash)
         # print("Fund transfer done under transaction hash:", tx_hash)
     except Exception as e:
         print('error in send radix-----',e)
@@ -87,7 +87,7 @@ async def send_junger_token(recipient_address, transaction_message, jungler_coun
             ),
             message_string=transaction_message
         )
-        #TODO- trigger telegram channel and add the transactoin and latest status in it,
+        await telegram_bot_push_message(tx_hash=tx_hash)
         # print("Fund transfer done under transaction hash:", tx_hash)
         return tx_hash
     except Exception as e:
@@ -135,3 +135,13 @@ async def check_tx_hash(tx_hash, project_wallet_address, count_tx_check) -> None
     # print('Transactions:', transactions_list)
     # return True #if success true or failure false\
     return status
+
+async def telegram_bot_push_message(tx_hash):
+    base_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+
+    parameters = {
+        "chat_id" : CHANNEL_ID,
+        "text" : tx_hash
+    }
+
+    requests.get(base_url, data = parameters)
