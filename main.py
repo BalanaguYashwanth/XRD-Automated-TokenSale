@@ -130,6 +130,7 @@ def cronJob():
 schedule.every(5).seconds.do(cronJob)
 
 if __name__ == "__main__":
+    # asyncio.run(main())
     while True:
         schedule.run_pending()
         time.sleep(5)

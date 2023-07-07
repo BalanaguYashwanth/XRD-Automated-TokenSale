@@ -12,17 +12,15 @@ response = s3_client.get_object(Bucket=BUCKET_NAME, Key=METADATA_FILE_KEY)
 existing_json = json.loads(response['Body'].read())
 data_json = existing_json['collection']
 
-#check
 async def check(info):
     with open("metadata.json") as file:
         digits = re.findall(r'\d+', info[5])
         i = 0
-        numbers = [num.zfill(4) for num in digits]
-        value = int(((float(XRD_LIMIT)* float(len(numbers)))/(float(info[3])))) #check once
+        numbers = [num for num in digits]
+        value = (float(XRD_LIMIT)* int(len(numbers)))/float(info[3])
+        rounded_value = round(value, 1)
         nums_to_send = []
-
-    if info[0] == 'TransferTokens' and info[4] == 'xrd_rr1qy5wfsfh' and info[5] != '-' and value == 1:  # this is not needed info[5] != '-'
-
+    if info[0] == 'TransferTokens' and info[4] == 'xrd_rr1qy5wfsfh' and info[5] != '-' and rounded_value == 1 and len(numbers) > 0:  # this is not needed info[5] != '-'
         for num in numbers:
             i += 1
             found = False
@@ -33,11 +31,11 @@ async def check(info):
                         nums_to_send.append(num)
                     else:
                         message = f"NFT with ID {num} already owned"
-                        await send_radix(info[1], message, float(XRD_LIMIT)) #we need to add check_tx_hash()  #use try catch
+                        await send_radix(info[1], message, info[4], float(XRD_LIMIT)) #we need to add check_tx_hash()  #use try catch
                         time.sleep(5)
             if not found:
                 message = f"NFT with ID {num} not found, Try buying Another"
-                await send_radix(info[1], message, float(XRD_LIMIT))
+                await send_radix(info[1], message, info[4], float(XRD_LIMIT))
                 time.sleep(5)
 
         if len(nums_to_send) > 0:
@@ -56,15 +54,11 @@ async def check(info):
                 nums_str = ", ".join(nums_to_send)
                 message  =  f"Yours NFT(s) with ID(s) failed {nums_str} please try after sometime"
                 refund_xrd_amount = float(len(nums_to_send) * XRD_LIMIT)
-                await send_radix(info[1], message, refund_xrd_amount)
+                await send_radix(info[1], message, info[4], refund_xrd_amount)
                 time.sleep(5)
 
         s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=METADATA_FILE_KEY)
 
     else:
-        await send_radix(info[1], "Please check instructions and again send exact XRD",float(info[3]))
+        await send_radix(info[1], "Please check instructions and again send exact XRD",info[4], float(info[3]))
         time.sleep(5)
-        #print("its not TransferTokens or token not xrd or message = null or not sent exact amount ")
-
-
-#check 1/2 or 2/3 check tx is getting failed

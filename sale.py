@@ -8,11 +8,11 @@ import config
 from config import MNEMONIC_PHRASE,PROJECT_WALLET_ADDRESS,JUNGLER_LIMIT,CHANNEL_ID,TELEGRAM_BOT_TOKEN
 
 
-async def send_radix(recipient_address, transaction_message, amount):
+async def send_radix(recipient_address, transaction_message, token_rri, amount):
     # Information about the person who we're sending the tokens to and the amount of tokens we're
     # sending.
     # recipient_address: str = "tdx1qsprkzrtmdhvfjnd9z00xtmmwg9p5wn5yawsuttu7dqqgsx2wfm25eqawk3n0"
-    token_rri: str = radix.constants.XRD_RRI['mainnet']
+    # token_rri: str = radix.constants.XRD_RRI['mainnet']
     transfer_amount = radix.derive.atto_from_xrd(float(amount))  # We will be sending them 200 XRD.
     # Defining the network that we will be connecting to.
     network: radix.network.Network = radix.network.MAINNET
@@ -33,7 +33,6 @@ async def send_radix(recipient_address, transaction_message, amount):
     # token transfer.
 
     try:
-        #TODO- Send telegram channel link,
         tx_hash =  wallet.build_sign_and_send_transaction(
             actions=(
                 wallet.action_builder.token_transfer(
@@ -74,7 +73,6 @@ async def send_junger_token(recipient_address, transaction_message, jungler_coun
     # token transfer.
 
     try:
-        #TODO- Send telegram channel link,
         tx_hash =  wallet.build_sign_and_send_transaction(
             actions=(
                 wallet.action_builder
