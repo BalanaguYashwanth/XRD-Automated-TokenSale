@@ -40,7 +40,7 @@ async def check(info):
 
         if len(nums_to_send) > 0:
             nums_str = ", ".join(nums_to_send)
-            message  =  f"Yours NFT(s) with ID(s) {nums_str}"
+            message  =  f"Purchased Successful! You're now the guardian of Jungler NFT(s) with ID(s) {nums_str}. Thank you for joining our mission to save the rainforest! Welcome to the community! "
             tx_hash = await send_junger_token(info[1], message, int(len(nums_to_send))) # we need to send only len of available nfts 2/3
             time.sleep(5)
             status = await check_tx_hash(tx_hash, PROJECT_WALLET_ADDRESS, int(len(nums_to_send))) #use try catch
@@ -52,7 +52,7 @@ async def check(info):
                             item["owner"] = info[1]
             else:
                 nums_str = ", ".join(nums_to_send)
-                message  =  f"Yours NFT(s) with ID(s) failed {nums_str} please try after sometime"
+                message  =  f"Transaction failed: Yours NFT(s) with ID(s) {nums_str}, please try after sometime."
                 refund_xrd_amount = float(len(nums_to_send) * XRD_LIMIT)
                 await send_radix(info[1], message, info[4], refund_xrd_amount)
                 time.sleep(5)
@@ -60,5 +60,5 @@ async def check(info):
         s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=METADATA_FILE_KEY)
 
     else:
-        await send_radix(info[1], "Please check instructions and again send exact XRD",info[4], float(info[3]))
+        await send_radix(info[1], "Refund processed! We detected an invalid transaction attempt. Follow the instructions on srilankanjunglers.com. Please ensure you have the necessary funds and try again. If this issue persists, reach out to our support team for assistance.",info[4], float(info[3]))
         time.sleep(5)
