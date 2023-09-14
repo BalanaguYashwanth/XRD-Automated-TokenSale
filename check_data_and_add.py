@@ -11,6 +11,29 @@ s3_client = boto3.client('s3', aws_access_key_id=ACCESS_KEY_ID, aws_secret_acces
 response = s3_client.get_object(Bucket=BUCKET_NAME, Key=METADATA_FILE_KEY)
 existing_json = json.loads(response['Body'].read())
 data_json = existing_json['collection']
+AVAILABLE =  "available"
+
+
+
+async def get_one_free(info, count):
+    available_nft = []
+    data_json.reverse()
+    for item in data_json:
+        if item['owner'] == AVAILABLE:
+            if len(available_nft) < count:
+                available_nft.append(item['ID'])
+                item['owner'] = info[1]
+            else:
+                break
+    data_json.reverse()
+    if len(available_nft):
+        total_nfts_str = ", ".join(available_nft)
+        message  =  f"As per of BUY 1 GET 1, You're now purchased the Jungler NFT(s) with ID(s) {total_nfts_str}. Thank you for joining our mission to save the rainforest! Welcome to the community! "
+        tx_hash = await send_junger_token(info[1], message, int(len(available_nft)))
+        status = await check_tx_hash(tx_hash, PROJECT_WALLET_ADDRESS, int(len(available_nft))) #use try catch
+        time.sleep(5)
+        if status:
+            s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=METADATA_FILE_KEY)
 
 async def check(info):
     with open("metadata.json") as file:
@@ -50,6 +73,11 @@ async def check(info):
                     for item in data_json:
                         if item['ID'] == nftItem and item['owner'] == "available":
                             item["owner"] = info[1]
+                #if buy one offer expires then remove below code
+                s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=METADATA_FILE_KEY)
+                time.sleep(5)
+                #Get 1 NFT free for each 1 NFT purchase
+                await get_one_free(info,len(nums_to_send))
             else:
                 nums_str = ", ".join(nums_to_send)
                 message  =  f"Transaction failed: Yours NFT(s) with ID(s) {nums_str}, please try after sometime."
