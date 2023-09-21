@@ -28,7 +28,7 @@ async def get_one_free(info, count):
     data_json.reverse()
     if len(available_nft):
         total_nfts_str = ", ".join(available_nft)
-        message  =  f"As per of BUY 1 GET 1, You're now purchased the Jungler NFT(s) with ID(s) {total_nfts_str}. Thank you for joining our mission to save the rainforest! Welcome to the community! "
+        message  =  f"In the spirit of Babylon's arrival, We're delivering exclusive Jungler tokens. Thanks for your early support! Your Radix rainforest treat: {total_nfts_str}"
         tx_hash = await send_junger_token(info[1], message, int(len(available_nft)))
         status = await check_tx_hash(tx_hash, PROJECT_WALLET_ADDRESS, int(len(available_nft))) #use try catch
         time.sleep(5)
@@ -53,17 +53,17 @@ async def check(info):
                     if item["owner"] == "available":
                         nums_to_send.append(num)
                     else:
-                        message = f"NFT with ID {num} already owned"
+                        message = f"Oops! It seems that Jungler {num} is already reserved. We've returned your Assets. There's plenty more in the rainforest. Find them on srilankanjunglers.com"
                         await send_radix(info[1], message, info[4], float(XRD_LIMIT)) #we need to add check_tx_hash()  #use try catch
                         time.sleep(5)
             if not found:
-                message = f"NFT with ID {num} not found, Try buying Another"
+                message = f"Oops! It seems that Jungler {num} not found, We've returned your Assets. There's plenty more in the rainforest. Find them on srilankanjunglers.com"
                 await send_radix(info[1], message, info[4], float(XRD_LIMIT))
                 time.sleep(5)
 
         if len(nums_to_send) > 0:
             nums_str = ", ".join(nums_to_send)
-            message  =  f"Purchased Successful! You're now the guardian of Jungler NFT(s) with ID(s) {nums_str}. Thank you for joining our mission to save the rainforest! Welcome to the community! "
+            message  =  f"Success! Your mint token safely traveled through the Radix jungle. Thank you for supporting srilankanjunglers.com. You reserved: {nums_str}."
             tx_hash = await send_junger_token(info[1], message, int(len(nums_to_send))) # we need to send only len of available nfts 2/3
             time.sleep(5)
             status = await check_tx_hash(tx_hash, PROJECT_WALLET_ADDRESS, int(len(nums_to_send))) #use try catch
@@ -88,5 +88,5 @@ async def check(info):
         s3_client.put_object(Body=json.dumps(existing_json), Bucket=BUCKET_NAME, Key=METADATA_FILE_KEY)
 
     else:
-        await send_radix(info[1], "Refund processed! We detected an invalid transaction attempt. Follow the instructions on srilankanjunglers.com. Please ensure you have the necessary funds and try again. If this issue persists, reach out to our support team for assistance.",info[4], float(info[3]))
+        await send_radix(info[1], "Oops, something went wrong. We've returned your assets. Please ensure you follow the steps on srilankanjunglers.com. If this issue persists, reach out to us.",info[4], float(info[3]))
         time.sleep(5)
